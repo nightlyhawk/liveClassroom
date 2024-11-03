@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - EduConnect</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f4f4f4;
+        }
+        .container {
+            width: 300px;
+            margin: 100px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 5px;
+        }
+        input {
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        button {
+            padding: 10px;
+            background: #333;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #444;
+        }
+        .signup-link {
+            text-align: center;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sign In</h1>
+        {% if errors %}
+        <p style="color: red;">{{ errors }}</p>
+        {% endif %}
+        <form action="{% url 'user_urls:user-signin' %}" method="post">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            
+            <button type="submit">Sign In</button>
+        </form>
+        <p class="signup-link">Don't have an account? <a href="{% url 'user_urls:user-signup' %}">Sign Up</a></p>
+    </div>
+    <script>
+        let cookie = getCookie("status")
+        if(cookie){
+            alert("sign up successful")
+            document.cookie = "status=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/;";
+        }
+        function clearCookies(cookieNames) {
+            cookieNames.forEach(cookieName => {
+                document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;`;
+            });
+        }
+        clearCookies(['user', 'tokens', 'data']);
+        function delete_cookie( name, path, domain ) {
+            if( get_cookie( name ) ) {
+                document.cookie = name + "=" +
+                ((path) ? ";path="+path:"")+
+                ((domain)?";domain="+domain:"") +
+                ";expires=Thu, 01 Jan 1970 00:00:01 GMT";
+            }
+        }
+        function getCookie(cname) {
+            let name = cname + "=";
+            let ca = document.cookie.split(';');
+            for(let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+    </script>
+</body>
+</html>

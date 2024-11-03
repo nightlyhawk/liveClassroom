@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages</title>
+    <!-- Load ZEGOCLOUD SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@zegocloud/zego-uikit-prebuilt"></script>
+</head>
+<body>
+    <div id="chat-container" style="width: 100%; height: 500px;"></div>
+    <script>
+        // Replace with your actual AppID and AppSign
+        const appID = 631095188;
+        const appSign = "3882e9726c74841a743df3730492cb720ef741db425ba6209508666364845e9e";
+    
+        // Initialize the ZEGOCLOUD SDK
+        ZegoUIKitPrebuilt.init(appID, appSign);
+    
+        // Create a chat room or join an existing room
+        function startChatRoom(roomID) {
+            const chatContainer = document.getElementById("chat-container");
+            ZegoUIKitPrebuilt.joinRoom({
+                container: chatContainer,
+                roomID: roomID,    // Unique room ID
+                userID: "{{ user.id }}",  // Replace with actual user ID
+                userName: "{{ user.fullName }}",  // Replace with actual user name
+                scenario: ZegoUIKitPrebuilt.Chat,
+            });
+        }
+    
+        // Example call to start the chat with a specific room ID
+        startChatRoom("{{ class.id }}");
+    </script>    
+</body>
+</html>

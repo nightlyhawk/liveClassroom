@@ -1,0 +1,322 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages - EduConnect</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        /* Sidebar */
+        .sidebar {
+            width: 200px;
+            background: #f4f4f4;
+            padding: 20px;
+        }
+        .sidebar h2 {
+            margin-bottom: 20px;
+        }
+        .sidebar ul {
+            list-style: none;
+        }
+        .sidebar ul li {
+            margin-bottom: 10px;
+        }
+        .sidebar ul li a {
+            color: #333;
+            text-decoration: none;
+        }
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .messages-container {
+            display: flex;
+            flex: 1;
+            border: 1px solid #ddd;
+        }
+        .contacts-list {
+            width: 200px;
+            border-right: 1px solid #ddd;
+            overflow-y: auto;
+        }
+        .active{
+            background: #f4f4f4;
+        }
+        .contact {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+        }
+        .contact:hover {
+            background: #f4f4f4;
+        }
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 70%;
+        }
+        .received {
+            background: #f4f4f4;
+            align-self: flex-start;
+        }
+        .sent {
+            background: #e3f2fd;
+            align-self: flex-end;
+        }
+        .message-input {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+        }
+        .message-input input {
+            flex: 1;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        .message-input button {
+            padding: 5px 10px;
+            background: #333;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <h2>EduConnect</h2>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'groups_urls:student-dashboard' %}">Dashboard</a></li>
+                    <li><a href="{% url 'class_urls:student-myclasses' %}">My Classes</a></li>
+                    <li><a href="{% url 'class_urls:classroom-recommended' %}">Join Class</a></li>
+                    <li><a href="{% url 'groups_urls:view-messages' %}">Messages</a></li>
+                    <li><a href="{% url 'user_urls:user-detail' %}">Profile</a></li>
+                </ul>
+                <li style="list-style: none; text-decoration: none;"><a href="#" id="signout" >Logout</a></li>
+            </nav>
+        </aside>
+        <main class="main-content">
+            <h1>Messages</h1>
+            <div class="messages-container">
+                <div class="contacts-list">
+                    {% if role == 'Student' %}
+                        {% if tutors %}
+                        {% for tutor in tutors %}
+                        <div class="contact" id="{{ tutor.user.fullName }}" onclick="active('{{ tutor.user.fullName }}'); toConversationID='{{ tutor.user.fullName }}'+'{{ tutor.user.id }}'">{{ tutor.user.fullName }}</div>
+                        {% endfor %}
+                        {% else %}
+                        <div>
+                            <p style="text-align: center;">You need to join a class to see your Instructors</p>
+                        </div>
+                        {% endif %}
+                    {% else %}
+                        {% if students %}
+                        {% for student in students %}
+                        <div class="contact" id="{{ student.user.fullName }}" onclick="active('{{ student.user.fullName }}'); toConversationID='{{ student.user.fullName }}'+'{{ student.user.id }}'">{{ student.user.fullName }}</div>
+                        {% endfor %}
+                        {% else %}
+                        <div>
+                            <p style="text-align: center;">No students have joined your class(es)</p>
+                        </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                <div class="chat-area">
+                    <div class="chat-messages">
+                        <!-- <div class="message received">
+                            <p>Hi there! Do you have any questions about the upcoming exam?</p>
+                        </div>
+                        <div class="message sent">
+                            <p>Yes, I was wondering if we could review Chapter 5 together.</p>
+                        </div>
+                        <div class="message received">
+                            <p>Sure, I'd be happy to help. How about we schedule a study session tomorrow at 3 PM?</p>
+                        </div>
+                        <div class="message sent">
+                            <p>That sounds great! Thank you so much for your help.</p>
+                        </div> -->
+                    </div>
+                    <div class="message-input">
+                        <input type="text" id="send" placeholder="Type your message...">
+                        <button onclick="sendMessage()">Send</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <!-- <script src="https://lib.zegocloud.com/ZegoUIKitPrebuilt/latest/index.js"></script> -->
+    <script src="{% static 'js/zego-zim-web/index.js' %}"></script>
+    <script>
+        let peer="04AAAAAGcoIkoAEGdha3ZjOWQyM2NlZ2Uyb2EAsPWkGPVsmRkhOm0lU84ZNaKdVMAlKZoVmvku41aG0jouF1iowHC0err0pgH90gzAWoZyDOPC8keY7LkzFmvkJCNvw/jTRmILqjo7dQ4Acki6990UFmz5lKQmGfWDEjLTBwqBdV2VbaI6jTvPrRk0n41ipYq7UWS8q4yCeJYLhNnrslLFH3UyfUdFEgaBGysLkzs0abgHL+SembcrcB+2CsiNdM18AE2OeF+6wiz/zFrM";
+        function getCookie(cname) {
+            let name = cname + "=";
+            let ca = document.cookie.split(';');
+            for(let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+        const chatBox = document.querySelector(".chat-messages");
+
+        let user = getCookie("user");
+        user = user.replace(/\\054/g, ",").replace(/"/g, '54s').replace(/'/g, '"').replace(/54s/g, "")
+        user = JSON.parse(user)
+        // const ZIM = require('zego-zim-web').ZIM;
+        // Replace with your actual AppID and AppSign
+        const appID = 631095188;
+        ZIM.create({ appID });
+        var zim = ZIM.getInstance();
+        var userInfo={userID: user.fullName + user.id, userName: user.fullName};
+        console.log(userInfo);
+        var token=user.fullName === "Sir Lancelot"? "04AAAAAGcoIUgAEGprb3p2cnF6OTM3OHVrZTEAsLc+Tgsd7RWAexqtGtwbf8YtqCmP0oOv8KKlrudj5mnepcSPJ7OiQlrm74A0GL9dIRo8ohazcGVl4NTDi/C1STyf4FyOARgaHn6xDeEnKh77iJIijwsXq3yaXwRgB6t0qCM9YhxhogHapkAKOV+S9K6zGB4cAxuiPwnaGAkO7b2B2+aXh7+QsiAs58lPRHRrcNxd8+lcb6mWVFNMymvT5m6MogKkBijb6jb3q8lf5HEY":"04AAAAAGcoIkoAEGdha3ZjOWQyM2NlZ2Uyb2EAsPWkGPVsmRkhOm0lU84ZNaKdVMAlKZoVmvku41aG0jouF1iowHC0err0pgH90gzAWoZyDOPC8keY7LkzFmvkJCNvw/jTRmILqjo7dQ4Acki6990UFmz5lKQmGfWDEjLTBwqBdV2VbaI6jTvPrRk0n41ipYq7UWS8q4yCeJYLhNnrslLFH3UyfUdFEgaBGysLkzs0abgHL+SembcrcB+2CsiNdM18AE2OeF+6wiz/zFrM";
+        const appSign = "3882e9726c74841a743df3730492cb720ef741db425ba6209508666364845e9e";
+        // Set up and listen for the callback for receiving error codes. 
+        zim.on('error', function (zim, errorInfo) {
+            console.log('error', errorInfo.code, errorInfo.message);
+        });
+
+        // Set up and listen for the callback for connection status changes.
+        zim.on('connectionStateChanged', function (zim, { state, event, extendedData }) {
+            console.log('connectionStateChanged', state, event, extendedData);
+            // When SDK logout occurred due to a long-time network disconnection, you will need to log in again. 
+            if (state == 0 && event == 3) {
+                zim.login(userInfo, token)
+            }
+        });
+
+        // Set up and listen for the callback for receiving one-to-one messages. 
+        zim.on('receivePeerMessage', function (zim, { messageList, fromConversationID }) {
+            console.log('receivePeerMessage', messageList, fromConversationID);
+            messageList.forEach((message) => {
+                const div = document.createElement("div");
+                div.className = "message recieved";
+                const p = document.createElement("p");
+                p.innerText = message;
+                div.appendChild(p);
+                chatBox.appendChild(div);
+            })
+        });
+
+        // Set up and listen for the callback for token expires.
+        zim.on('tokenWillExpire', function (zim, { second }) {
+            console.log('tokenWillExpire', second);
+            // You can call the renewToken method to renew the token. 
+            // To generate a new Token, refer to the Prerequisites.
+            zim.renewToken(token)
+                .then(function({ token }){
+                    // Renewed successfully.
+                })
+                .catch(function(err){
+                    // Renew failed.
+                })
+        });
+
+        var toConversationID = ''; // Peer user's ID.
+        var conversationType = 0; // Message type; 1-on- chat: 0, in-room chat: 1, group chat:2 
+        var config = { 
+            priority: 1, // Set priority for the message. 1: Low (by default). 2: Medium. 3: High.
+        };
+
+        var messageTextObj = { type: 1, message: 'Message text', extendedData: 'Message extended info(optional)' };
+        var notification = {
+            onMessageAttached: function(message) {
+                // todo: Loading
+            }
+        }
+        const sendInput = document.getElementById("send");
+        sendInput.addEventListener("input", (e) => {
+            messageTextObj.message = e.target.value;
+            console.log("here");
+            console.log(toConversationID);
+        })
+        function sendMessage(){
+            zim.sendMessage(messageTextObj, toConversationID, conversationType, config, notification)
+                .then(function ({ message }) {
+                    // Message sent successfully.
+                    console.log(message);
+                    const div = document.createElement("div");
+                    div.className = "message sent";
+                    const p = document.createElement("p");
+                    p.innerText = message;
+                    div.appendChild(p);
+                    chatBox.appendChild(div);
+                })
+                .catch(function (err) {
+                    alert(JSON.stringify(err));
+                    console.log(err.message);
+                });
+        }
+        
+        const tabs = document.querySelectorAll(".contact");
+        function active(id){
+            for(let i=0;  i<tabs.length; i++){
+                tabs[i].classList.remove("active")
+            }
+            const tab = document.getElementById(`${id}`);
+            tab.classList.add("active");
+
+        }
+        // Initialize the ZEGOCLOUD SDK
+        // ZegoUIKitPrebuilt.init(appID, appSign);
+    
+        // // Create a chat room or join an existing room
+        // function startChatRoom(roomID, userID, name) {
+        //     console.log("attempt");
+        //     const chatContainer = document.getElementById("chat-container");
+        //     ZegoUIKitPrebuilt.joinRoom({
+        //         container: chatContainer,
+        //         roomID: roomID,    // Unique room ID
+        //         userID: userID,  // Replace with actual user ID
+        //         userName: name,  // Replace with actual user name
+        //         scenario: ZegoUIKitPrebuilt.Chat,
+        //     });
+        // }
+    
+        // Example call to start the chat with a specific room ID
+        // startChatRoom("{{ class.id }}");startChatRoom('{{ tutor.id }}', '{{ tutor.user.id }}', '{{ tutor.user.fullName }}')
+    </script>    
+</body>
+</html>

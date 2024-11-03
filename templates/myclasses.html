@@ -1,0 +1,149 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Classes - EduConnect</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding: 1rem;
+            margin-bottom: 20px;
+        }
+        nav ul {
+            list-style: none;
+        }
+        nav ul li {
+            display: inline;
+            margin-right: 10px;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+        h1, h2 {
+            margin-bottom: 20px;
+        }
+        .class-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .class-card {
+            background: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .class-header {
+            background: #333;
+            color: #fff;
+            padding: 10px;
+        }
+        .class-body {
+            padding: 15px;
+        }
+        .class-footer {
+            background: #f4f4f4;
+            padding: 10px;
+            text-align: right;
+        }
+        .btn {
+            display: inline-block;
+            background: #333;
+            color: #fff;
+            padding: 7px 15px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn:hover {
+            background: #555;
+        }
+        .progress-bar {
+            background: #e0e0e0;
+            height: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .progress {
+            background: #4CAF50;
+            height: 100%;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>EduConnect</h1>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'groups_urls:student-dashboard' %}">Dashboard</a></li>
+                    <li><a href="{% url 'class_urls:student-myclasses' %}">My Classes</a></li>
+                    <li><a href="{% url 'class_urls:classroom-recommended' %}">Join Class</a></li>
+                    <li><a href="{% url 'groups_urls:view-messages' %}">Messages</a></li>
+                    <li><a href="{% url 'user_urls:user-detail' %}">Profile</a></li>
+                </ul>
+                <li style="list-style: none; text-decoration: none;"><a href="#" id="signout" >Logout</a></li>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2>My Classes</h2>
+        {% if data %}
+        <div class="class-grid">
+            {% for class in data %}
+            <div class="class-card">
+                <div class="class-header">
+                    <h3>{{ class.title }}</h3>
+                </div>
+                <div class="class-body">
+                    <p><strong>Instructor:</strong>{{ class.instructor.user.fullName }}</p>
+                    <p><strong>Schedule:</strong>{{ class.startDate }}</p>
+                    <p><strong>Course:</strong>{{ class.course }}</p>
+                    <p><strong>Course Code:</strong>{{ class.courseCode }}</p>
+                    <!-- <div class="progress-bar">
+                        <div class="progress" style="width: 47%;"></div>
+                    </div> -->
+                </div>
+                <div class="class-footer">
+                    {% if class.roomID > 0 %}
+                    <a href="#" onclick="window.location.href= `/class/live/${user.id}/?roomID={{ class.roomID }}`" class="btn">Enter Class</a>
+                    {% else %}
+                    <a href="#" class="btn">Not in progress</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div>
+            <p>You haven't joined any classes yet</p>
+        </div>
+        {% endif %}
+    </div>
+    <script src="{% static 'js/script.js' %}"`></script>
+</body>
+</html>

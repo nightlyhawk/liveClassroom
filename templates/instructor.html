@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instructor Registration - EduConnect</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f4f4f4;
+        }
+        .container {
+            width: 300px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 5px;
+        }
+        input, select, textarea {
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        button {
+            padding: 10px;
+            background: #333;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #444;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Instructor Registration</h1>
+        {% if errors %}
+        <p style="color: red;">{{ errors }}</p>
+        {% endif %}
+        <form action="{% url 'groups_urls:instructor-create' %}" method="post">
+            <label for="specialization">Specialization:</label>
+            <input type="text" id="specialization" name="course" placeholder="e.g., Mathematics, Physics, Literature" required>
+            
+            <label for="education">Highest Education Level:</label>
+            <select id="education" name="educationLevel" required>
+                <option value="">Select education level</option>
+                <option value="Bachelor's Degree">Bachelor's Degree</option>
+                <option value="Master's Degree">Master's Degree</option>
+                <option value="Ph.D.">Ph.D.</option>
+                <option value="other">Other</option>
+            </select>
+            
+            <label for="experience">Years of Teaching Experience:</label>
+            <input type="number" id="experience" name="experience" min="0" required>
+            
+            <label for="bio">Short Bio:</label>
+            <textarea id="bio" name="bio" rows="4" placeholder="Tell us about your teaching experience and approach"></textarea>
+            
+            <button type="submit">Register</button>
+        </form>
+    </div>
+</body>
+</html>

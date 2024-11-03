@@ -1,0 +1,139 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Classes - EduConnect</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding: 1rem;
+            margin-bottom: 20px;
+        }
+        nav ul {
+            list-style: none;
+        }
+        nav ul li {
+            display: inline;
+            margin-right: 10px;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+        h1, h2 {
+            margin-bottom: 20px;
+        }
+        .class-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .class-card {
+            background: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            overflow: hidden;
+            padding: 5%;
+        }
+        .class-header {
+            background: #333;
+            color: #fff;
+            padding: 10px;
+        }
+        .class-body {
+            padding: 15px;
+        }
+        .class-footer {
+            background: #f4f4f4;
+            padding: 10px;
+            text-align: right;
+        }
+        .btn {
+            display: inline-block;
+            background: #333;
+            color: #fff;
+            padding: 7px 15px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn:hover {
+            background: #555;
+        }
+        .progress-bar {
+            background: #e0e0e0;
+            height: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .progress {
+            background: #4CAF50;
+            height: 100%;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>EduConnect</h1>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'groups_urls:instructor-dashboard' %}">Dashboard</a></li>
+                    <li><a href="#" onclick="window.location.href = `/class/instructor/classes/${user.id}/`">My Classes</a></li>
+                    <li><a href="{% url 'groups_urls:instructor-schedule' %}">Schedule</a></li>
+                    <li><a href="{% url 'groups_urls:view-messages' %}">Messages</a></li>
+                    <li><a href="{% url 'user_urls:user-detail' %}">Profile</a></li>
+                </ul> 
+                <li style="list-style: none; text-decoration: none;"><a href="#" id="signout" >Logout</a></li>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2>My Classes</h2>
+
+        <div class="class-grid">
+            {% if data %}
+            {% for class in data %}
+            <div class="class-card">
+                <h3>{{ class.title }}</h3>
+                <p>{{ class.description }}</p>
+                <p>{{ class.course }}</p>
+                <p>{{ class.courseCode }}</p>
+                <p>{{ class.startTime }}</p>
+                <a href="#" class="btn" onclick="ViewClass('{{ class.id }}')">Manage Class</a>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div>
+                <p>No Class yet</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <script src="{% static 'js/script.js' %}"`></script>
+    </body>
+</html>

@@ -1,0 +1,163 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Schedule - EduConnect</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding: 1rem;
+            margin-bottom: 20px;
+        }
+        nav ul {
+            list-style: none;
+        }
+        nav ul li {
+            display: inline;
+            margin-right: 10px;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+        h1, h2 {
+            margin-bottom: 20px;
+        }
+        .calendar {
+            background: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+        .calendar-day {
+            border: 1px solid #ddd;
+            padding: 10px;
+            min-height: 100px;
+        }
+        .calendar-day-header {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .event {
+            background: #e0e0e0;
+            padding: 5px;
+            margin-bottom: 5px;
+            border-radius: 3px;
+            font-size: 0.8em;
+        }
+        .btn {
+            display: inline-block;
+            background: #333;
+            color: #fff;
+            padding: 7px 15px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>EduConnect</h1>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'groups_urls:instructor-dashboard' %}">Dashboard</a></li>
+                    <li><a href="#" onclick="window.location.href = `/class/instructor/classes/${user.id}/`">My Classes</a></li>
+                    <li><a href="{% url 'groups_urls:instructor-schedule' %}">Schedule</a></li>
+                    <li><a href="{% url 'groups_urls:view-messages' %}">Messages</a></li>
+                    <li><a href="{% url 'user_urls:user-detail' %}">Profile</a></li>
+                </ul>
+                <li style="list-style: none; text-decoration: none;"><a href="#" id="signout" >Logout</a></li>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2>My Schedule</h2>
+
+        <div class="calendar">
+            <div class="calendar-header">
+                <button class="btn">&lt; Previous</button>
+                <h3>May 2024</h3>
+                <button class="btn">Next &gt;</button>
+            </div>
+            <div class="calendar-grid">
+                <div class="calendar-day-header">Sun</div>
+                <div class="calendar-day-header">Mon</div>
+                <div class="calendar-day-header">Tue</div>
+                <div class="calendar-day-header">Wed</div>
+                <div class="calendar-day-header">Thu</div>
+                <div class="calendar-day-header">Fri</div>
+                <div class="calendar-day-header">Sat</div>
+
+                <!-- Example of a week's worth of days -->
+                <div class="calendar-day"></div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">1</div>
+                    <div class="event">Math 101 - 10:00 AM</div>
+                    <div class="event">Office Hours - 2:00 PM</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">2</div>
+                    <div class="event">Physics 201 - 11:00 AM</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">3</div>
+                    <div class="event">Math 101 - 10:00 AM</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">4</div>
+                    <div class="event">Physics 201 - 11:00 AM</div>
+                    <div class="event">Department Meeting - 3:00 PM</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">5</div>
+                    <div class="event">Math 101 - 10:00 AM</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">6</div>
+                </div>
+                <!-- More calendar days would follow -->
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>

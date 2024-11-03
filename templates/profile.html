@@ -1,0 +1,172 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - EduConnect</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        
+        .profile-info {
+            margin-bottom: 20px;
+        }
+        .profile-info p {
+            margin-bottom: 10px;
+        }
+        form {
+            display: grid;
+            gap: 15px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        button {
+            padding: 10px;
+            background: #333;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .btn {
+            display: inline-block;
+            background: #333;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        button:hover {
+            background: #444;
+        }
+        .back-button {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="back-button">
+            {% if user.role == 'Instructor' %}
+            <a href="{% url 'groups_urls:instructor-dashboard' %}" class="btn btn-secondary">← Back to Dashboard</a>
+            {% else %}
+            <a href="{% url 'groups_urls:student-dashboard' %}" class="btn btn-secondary">← Back to Dashboard</a>
+            {% endif %}
+        </div>
+        <h1>User Profile</h1>
+        <div class="profile-info">
+            <p><strong>Name:</strong>{{ user.fullName }}</p>
+            <p><strong>Email:</strong>{{ user.email }}</p>
+            <p><strong>Role:</strong>{{ user.role }}</p>
+        </div>
+        <h2>Edit Profile</h2>
+        <form action="{% url 'user_urls:user-edit' user.id %}" method="post">
+            <div>
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" value="{{ user.fullName }}" required>
+            </div>
+            <div>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="{{ user.email }}" required>
+            </div>
+            <div>
+                <label for="password">New Password:</label>
+                <input type="password" id="password" name="password">
+            </div>
+            <div>
+                <label for="confirm-password">Confirm New Password:</label>
+                <input type="password" id="confirm-password" name="confirm-password">
+            </div>
+            <button type="submit">Update Profile</button>
+        </form>
+        {% if user.role == 'Instructor' %}
+        <form action="{% url 'groups_urls:instructor-edit' role.id %}" method="put">
+            <div>
+                <label for="bio">Bio:</label>
+                <textarea id="bio" name="bio" rows="4">{{ role.bio }}</textarea>
+            </div>
+            <div>
+                <label for="education">Highest Education Level:</label>
+                <select id="education" name="educationLevel" required>
+                    <option value="">Select education level</option>
+                    <option value="Bachelor's Degree">Bachelor's Degree</option>
+                    <option value="Master's Degree">Master's Degree</option>
+                    <option value="Ph.D.">Ph.D.</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div>
+                <label for="specialization">Specialization:</label>
+                <input type="text" id="specialization" name="course" placeholder="{{ role.course }}" required>
+            </div>
+            <div>
+                <label for="experience">Years of Teaching Experience:</label>
+                <input type="number" id="experience" name="experience" min="0" value="{{ role.experience }}" required>
+            </div>
+            <button type="submit">Update {{ user.role }} Profile</button>
+        </form>
+        {% else %}
+        <form action="{% url 'groups_urls:student-edit' role.id %}" method="put">
+            <div>
+                <label for="grade-level">Level:</label>
+                <select id="grade-level" name="level" required>
+                    <option value="">Select level</option>
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                    <option value="300">300</option>
+                    <option value="400">400</option>
+                    <option value="500">500</option>
+                    <option value="600">600</option>
+                </select>
+            </div>
+            
+            <div>
+                <label for="subjects">Subjects of Interest:</label>
+                <input type="text" id="subjects" name="courses" placeholder="{{ role.courses }}">
+            </div>
+            
+            <button type="submit">Update {{ user.role }} Profile</button>
+        </form>
+        {% endif %}
+    </div>
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>
