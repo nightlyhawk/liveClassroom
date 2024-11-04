@@ -56,7 +56,7 @@ class AssessmentSerializer(serializers.ModelSerializer):
     
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        representation['classroomTitle'] = instance.classroom.title
+        representation['classTitle'] = instance.classroom.title
 
         return representation
 
@@ -78,7 +78,7 @@ class SubmissionsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Submissions
-        fields = ('id', 'assessment', 'text', 'file')
+        fields = ('id', 'assessment', 'text', 'file', 'status', 'score', 'createdAt')
 
     def create(self, validated_data):
         assessment = validated_data.pop('assessment')

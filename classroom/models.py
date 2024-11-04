@@ -37,11 +37,15 @@ class Assessment(models.Model):
     def __str__(self):
         return self.title
 
+def submissions_directory_path(instance, filename):
+    # file will be uploaded to MEDIA_ROOT/submissions_assessment_<title>/<filename>
+    return 'submissions_{0}/{1}'.format(instance.assessment.title, filename)
+
 class Submissions(models.Model):
     assessment = models.ForeignKey(Assessment, on_delete=models.CASCADE, related_name="submissions")
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     text = models.TextField()
-    file = models.FileField()
+    file = models.FileField(upload_to=submissions_directory_path)
     PENDING = "pending"
     GRADED = "graded"
     status_choices = [

@@ -118,11 +118,12 @@
         </div>
 
         <form id="submissions" onsubmit="amtID='{{ data.id }}'">
-            <div class="question">
-                <textarea></textarea>
+            <div class="form-group subform">
+                <label for="text">Answer:</label>
+                <textarea id="text" name="text" rows="4" placeholder="Type your answer here or upload a file"></textarea>
                 <input type="file" id="file" name="file" style="display: none;"/>
-                <input type="button" name="file-upload" id="file-upload" />
             </div>
+            <button class="btn" onclick="document.getElementById('file').click()" name="file-upload" id="file-upload"><img src="{% static 'static/icons/attachment.svg' %}" alt="upload" /></button>
             <button type="submit" class="btn">Submit Assessment</button>
         </form>
     </div>

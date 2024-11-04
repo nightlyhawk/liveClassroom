@@ -257,3 +257,9 @@ function delAmt(id){
     })
     .catch(error => alert(error))
 }
+
+document.getElementById("file").addEventListener("change", () => {
+    const p = document.createElement("p");
+    p.innerText = "file attached";
+    document.getElementById("subform").appendChild(p);
+})
