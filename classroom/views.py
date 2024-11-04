@@ -34,7 +34,7 @@ def viewingClass(request, pk):
     
 def startclass(request, pk):
     user = ast.literal_eval(request.COOKIES.get('user'))
-    return render(request, "liveClass.html", context={"id": pk, "name": user['fullName']})
+    return render(request, "liveClass.html", context={"id": pk, "name": user['fullName'], "role": user['role']})
         
 class ClassroomDetails(APIView):
     permission_classes = [IsAuthenticated]
@@ -168,3 +168,122 @@ class SearchClass(ListAPIView):
     serializer_class = ClassroomSerializer
     filter_backends = [SearchFilter]
     search_fields = ['title', 'course', 'instructor__user__fullName']
+
+@permission_classes([AllowAny])
+def assessmentView(request):
+    if request.COOKIES.get('user'):
+        user = ast.literal_eval(request.COOKIES.get('user'))
+        user = NewUser.objects.get(pk=user['id'])
+        context = {"data": {}}
+        if user.role == "Instructor":
+            classrooms = Classroom.objects.filter(instructor__user=user)
+            assessment = Assessment.objects.filter(classroom__instructor__user=user)
+            for room in classrooms.all():
+                context["data"][f'{room.title}'] = []
+                for amt in assessment.all():
+                    if amt.classroom.title == room:
+                        context["data"][f'{room.title}'].append(amt)
+                    else: 
+                        pass
+
+            return render(request, "viewAmt.html", context=context)
+        else:
+            classrooms = Classroom.objects.filter(students__user__id=user.pk)
+            assessment = Assessment.objects.filter(classroom__id__in=classrooms.values_list("pk", flat=True))
+            for room in classrooms.all():
+                context["data"][f'{room.title}'] = []
+                for amt in assessment.all():
+                    if amt.classroom.title == room:
+                        context["data"][f'{room.title}'].append(amt)
+                    else: 
+                        pass
+
+            return render(request, "stdnViewAmt.html", context=context)
+class AssessmentDetails(APIView):
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, JSONParser, FormParser]
+
+    def post(self, request, pk):
+        classroom = Classroom.objects.get(pk=pk)
+        serializer = AssessmentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(classroom=classroom)
+            return redirect("class_urls:view-assessment")
+        return render(request, "createAmt.html", context={"id":pk, "error":serializer.errors})
+    
+    def put(self, request, pk):
+        try:
+            instance = Assessment.objects.get(id=pk)
+        except Assessment.DoesNotExist:
+            return Response({"message": "Assessment not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = AssessmentSerializer(instance, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+    
+    def delete(self, request, pk):
+        try:
+            user = ast.literal_eval(request.COOKIES.get('user'))
+            user = NewUser.objects.get(pk=user['id'])
+            instance = Assessment.objects.get(id=pk, classroom__instruction__user=user)
+        except Assessment.DoesNotExist:
+            return Response({"message": "Assessment not found"}, status=status.HTTP_404_NOT_FOUND)
+        instance.delete()
+        return redirect("class_urls:view-assessment")
+        
+
+@permission_classes([AllowAny])
+def getAssessment(request, action, **kwargs):
+    pk = kwargs.get("pk")
+    user = ast.literal_eval(request.COOKIES.get('user'))
+    user = NewUser.objects.get(pk=user['id'])
+    if action == "create":
+        classes = Classroom.objects.filter(instructor__user=user).all()
+        serializer = ClassroomSerializer(classes, many=True)
+        return render(request, "createAmt.html", context={"classes": serializer.data})
+    elif action == "edit":
+        assessment = Assessment.objects.get(id=pk)
+        serializer = AssessmentSerializer(assessment)
+        classes = Classroom.objects.filter(instructor__user__id=pk).all()
+        classserializer = ClassroomSerializer(classes, many=True)
+        return render(request, "editAmt.html", context={"id": pk, "data": serializer.data, "classes": classserializer.data})
+    elif action == "answer":
+        assessment = Assessment.objects.get(id=pk)
+        serializer = AssessmentSerializer(assessment)
+        return render(request, "answerAmt.html", context={"id": pk, "data": serializer.data})
+
+@permission_classes([AllowAny])
+def submissionView(request, pk):
+    if request.COOKIES.get('user'):
+        user = ast.literal_eval(request.COOKIES.get('user'))
+        user = NewUser.objects.get(pk=user['id'])
+        assessment = Assessment.objects.get(classroom__instructor__user=user, pk=pk)
+        serializer = SubmissionsSerializer(assessment.submissions, many=True)
+
+        return render(request, "submissions.html", context={"subs": serializer.data})
+class SubmissionsDetails(APIView):
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, JSONParser, FormParser]
+
+    def post(self, request, pk):
+        amt = Assessment.objects.get(pk=pk)
+        serializer = SubmissionsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(assessment=amt)
+            return redirect("class_urls:view-assessment")
+        return render(request, "answerAmt.html", context={"error":serializer.errors})
+    
+    def put(self, request, pk):
+        try:
+            instance = Submissions.objects.get(id=pk)
+        except Submissions.DoesNotExist:
+            return Response({"message": "Submissions not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = SubmissionsSerializer(instance, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+    

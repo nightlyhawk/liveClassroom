@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Assessments - EduConnect</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f4f4f4;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding: 1rem;
+            margin-bottom: 20px;
+        }
+        nav ul {
+            list-style: none;
+        }
+        nav ul li {
+            display: inline;
+            margin-right: 10px;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+        h1, h2, h3 {
+            margin-bottom: 20px;
+        }
+        .class-section {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .btn {
+            display: inline-block;
+            background: #333;
+            color: #fff;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .btn:hover {
+            background: #555;
+        }
+        .btn-primary {
+            background: #007bff;
+        }
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        .status {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status-upcoming {
+            background-color: #ffc107;
+            color: #000;
+        }
+        .status-open {
+            background-color: #28a745;
+            color: #fff;
+        }
+        .status-submitted {
+            background-color: #17a2b8;
+            color: #fff;
+        }
+        .status-graded {
+            background-color: #6c757d;
+            color: #fff;
+        }
+        .status-overdue {
+            background-color: #dc3545;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>EduConnect</h1>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'groups_urls:student-dashboard' %}">Dashboard</a></li>
+                    <li><a href="{% url 'class_urls:student-myclasses' %}">My Classes</a></li>
+                    <li><a href="{% url 'class_urls:classroom-recommended' %}">Join Class</a></li>
+                    <li><a href="{% url 'class_urls:view-assessment' %}">Assessments</a></li>
+                    <li><a href="{% url 'groups_urls:view-messages' %}">Messages</a></li>
+                    <li><a href="{% url 'user_urls:user-detail' %}">Profile</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2>My Assessments</h2>
+        {% if data %}
+        {% for key, value in data.items %}
+        <div class="class-section">
+            <h3>{{ key }}</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Assessment Title</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                        <th>Score</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if value %}
+                    {% for assessment in value %}
+                    <tr>
+                        <td>{{ assessment.title }}</td>
+                        <td>{{ assessment.dueDate }}</td>
+                        <td>{{ assessment.status }}</td>
+                        <!-- <td><span class="status status-upcoming">Upcoming</span></td> -->
+                        <td>{{ assessment.score }}</td>
+                        <td>
+                            <a href="{% url 'class_urls:manipulate-assessment' 'answer' %}?pk={{ assessment.id }}" class="btn">View Details</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="4"><h3 style="text-align: center;">No assessments yet</h3></td>
+                    </tr>
+                    {% endif %}
+                        <!-- <td><span class="status status-submitted">Submitted</span></td> -->
+                        
+                        <!-- <td><span class="status status-graded">Graded</span></td> -->
+                        
+                        
+                        <!-- <td><span class="status status-open">Open</span></td> -->
+    </div>
+</body>
+</html>

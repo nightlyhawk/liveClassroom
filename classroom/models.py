@@ -18,3 +18,39 @@ class Classroom(models.Model):
 
     def __str__(self):
         return self.title
+
+class Assessment(models.Model):
+    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE, related_name="assessment_class")
+    title = models.CharField(max_length=200)
+    instructions = models.TextField()
+    dueTime = models.DateTimeField()
+    ONGOING = "ongoing"
+    ENDED = "ended"
+    GRADED = "graded"
+    status_choices = [
+        (ONGOING, "ongoing"),
+        (ENDED, "ended"),
+        (GRADED, "graded"),
+    ]
+    status = models.CharField(max_length=20, choices=status_choices, default="ongoing")
+    
+    def __str__(self):
+        return self.title
+
+class Submissions(models.Model):
+    assessment = models.ForeignKey(Assessment, on_delete=models.CASCADE, related_name="submissions")
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    text = models.TextField()
+    file = models.FileField()
+    PENDING = "pending"
+    GRADED = "graded"
+    status_choices = [
+        (PENDING, "pending"),
+        (GRADED, "graded"),
+    ]
+    status = models.CharField(max_length=20, choices=status_choices, default="pending")
+    score = models.IntegerField()
+    createdAt = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return self.assessment.title

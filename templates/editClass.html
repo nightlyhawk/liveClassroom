@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -120,9 +121,10 @@
                     <li><a href="{% url 'groups_urls:instructor-dashboard' %}">Dashboard</a></li>
                     <li><a href="#" onclick="window.location.href = `/class/instructor/classes/${user.id}/`">My Classes</a></li>
                     <li><a href="{% url 'groups_urls:instructor-schedule' %}">Schedule</a></li>
+                    <li><a href="{% url 'class_urls:view-assessment' %}">Assessments</a></li>
                     <li><a href="{% url 'groups_urls:view-messages' %}">Messages</a></li>
                     <li><a href="{% url 'user_urls:user-detail' %}">Profile</a></li>
-                </ul> 
+                </ul>
                 <li style="list-style: none; text-decoration: none;"><a href="#" id="signout" >Logout</a></li>
             </nav>
         </aside>
@@ -195,36 +197,6 @@
             </div>
         </form>
     </div>
-    <script>
-        let url;
-        const links = document.getElementsByClassName("links");
-        function getCookie(cname) {
-            let name = cname + "=";
-            let ca = document.cookie.split(';');
-            for(let i = 0; i < ca.length; i++) {
-                let c = ca[i];
-                while (c.charAt(0) == ' ') {
-                c = c.substring(1);
-                }
-                if (c.indexOf(name) == 0) {
-                return c.substring(name.length, c.length);
-                }
-            }
-            return "";
-        }
-        let token = getCookie("tokens");
-        for(let i=0; i<links.length; i++){
-            links[i].addEventListener("click", (async () => {
-            const result = await fetch(`${window.location.protocol + "//" + window.location.host}${url}`, {
-                    method: "GET",
-                    redirect: "follow",
-                    credentials: "include",
-                    headers: {"Authorization": `JWT ${token.access_token}`}, 
-                })
-                .then(response => response.json())
-                .catch(error => alert(error))
-            }))
-        }
-    </script>
+    <script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>

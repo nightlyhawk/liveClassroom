@@ -168,3 +168,92 @@ function JoinCode(cd){
     .then(message => alert(JSON.stringify(message)))
     .catch(error => alert(error))
 }
+
+const createAmt = document.getElementById("submitAmt");
+createAmt.addEventListener("submit", (e) => {
+    e.preventDefault();
+    console.log("entered");
+    let newForm = new FormData(createAmt);
+
+    fetch(`${window.location.protocol + "//" + window.location.host}/class/create/assessment/${newForm.get("classID")}`, {
+            method: "POST",
+            credentials: "include",
+            body: newForm,
+            headers: {"Authorization": `JWT ${token.access}`, "X-CSRFToken": getCookie("csrftoken")}, 
+        })
+    .then(response => {
+        if(!response.ok){
+            throw new Error(JSON.stringify(response.json()))
+        }else{
+            return response.json();
+        }
+    })
+    .then(message => alert(JSON.stringify(message)))
+    .catch(error => alert(error))
+})
+
+const subAmt = document.getElementById("submissions");
+let amtID;
+subAmt.addEventListener("submit", (e) => {
+    e.preventDefault();
+    console.log("entered");
+    let newForm = new FormData(subAmt);
+
+    fetch(`${window.location.protocol + "//" + window.location.host}/class/create/submissions/${amtID}`, {
+            method: "POST",
+            credentials: "include",
+            body: newForm,
+            headers: {"Authorization": `JWT ${token.access}`, "X-CSRFToken": getCookie("csrftoken")}, 
+        })
+    .then(response => {
+        if(!response.ok){
+            throw new Error(JSON.stringify(response.json()))
+        }else{
+            return response.json();
+        }
+    })
+    .then(message => alert(JSON.stringify(message)))
+    .catch(error => alert(error))
+})
+
+const editAmt = document.getElementById("editAmt");
+editAmt.addEventListener("submit", (e) => {
+    e.preventDefault();
+    console.log("entered");
+    let newForm = new FormData(editAmt);
+
+    fetch(`${window.location.protocol + "//" + window.location.host}/class/edit/assessment/${newForm.get("classID")}`, {
+            method: "PUT",
+            credentials: "include",
+            body: newForm,
+            headers: {"Authorization": `JWT ${token.access}`, "X-CSRFToken": getCookie("csrftoken")}, 
+        })
+    .then(response => {
+        if(!response.ok){
+            throw new Error(JSON.stringify(response.json()))
+        }else{
+            return response.json();
+        }
+    })
+    .then(message => alert(JSON.stringify(message)))
+    .catch(error => alert(error))
+})
+
+function delAmt(id){
+    fetch(`${window.location.protocol + "//" + window.location.host}/class/delete/assessment/${id}`, {
+        method: "DELETE",
+        redirect: "follow",
+        credentials: "include",
+        headers: {"Authorization": `JWT ${token.access}`}, 
+    })
+    .then(response => {
+        if(!response.ok){
+            throw new Error(JSON.stringify(response.json()))
+        }else{
+            if(response.redirected){
+                window.location.href = response.url;
+            }
+        }
+    })
+    .catch(error => alert(error))
+}

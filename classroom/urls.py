@@ -19,4 +19,12 @@ urlpatterns = [
     path('instructor/classes/<int:pk>/', InstructorMyClasses, name='instructor-classes'),
     path('search/', SearchClass.as_view(), name='search-class'),
     path('filter/', FilterClasses.as_view(), name='filter-classes'),
+    path('view/assessment/', assessmentView, name='view-assessment'),
+    path('assessment/<str:action>/', getAssessment, name='manipulate-assessment'),
+    path('create/assessment/<int:pk>/', AssessmentDetails.as_view(), name='create-assessment'),
+    path('edit/assessment/<int:pk>/', AssessmentDetails.as_view(), name='edit-assessment'),
+    path('delete/assessment/<int:pk>/', AssessmentDetails.as_view(), name='delete-assessment'),
+    path('view/submissions/<int:pk>/', submissionView, name='view-submissions'),
+    path('create/submissions/<int:pk>/', SubmissionsDetails.as_view(), name='create-submissions'),
+    path('edit/submissions/<int:pk>/', SubmissionsDetails.as_view(), name='edit-submissions'),
 ]

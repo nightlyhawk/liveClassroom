@@ -1,11 +1,10 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Classes - EduConnect</title>
+    <title>Add Assessment - EduConnect</title>
     <style>
         /* Basic Reset */
         * {
@@ -21,6 +20,7 @@
         }
         .container {
             width: 80%;
+            max-width: 800px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -44,54 +44,43 @@
         h1, h2 {
             margin-bottom: 20px;
         }
-        .class-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+        .form-group {
+            margin-bottom: 20px;
         }
-        .class-card {
-            background: #fff;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            overflow: hidden;
-            padding: 5%;
+        label {
+            display: block;
+            margin-bottom: 5px;
         }
-        .class-header {
-            background: #333;
-            color: #fff;
-            padding: 10px;
-        }
-        .class-body {
-            padding: 15px;
-        }
-        .class-footer {
-            background: #f4f4f4;
-            padding: 10px;
-            text-align: right;
+        input[type="text"],
+        input[type="datetime-local"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
         }
         .btn {
             display: inline-block;
             background: #333;
             color: #fff;
-            padding: 7px 15px;
+            padding: 10px 20px;
             border: none;
-            border-radius: 3px;
+            border-radius: 5px;
             cursor: pointer;
             text-decoration: none;
+            font-size: 16px;
         }
         .btn:hover {
             background: #555;
         }
-        .progress-bar {
-            background: #e0e0e0;
-            height: 10px;
-            border-radius: 5px;
-            margin-top: 10px;
-        }
-        .progress {
-            background: #4CAF50;
-            height: 100%;
-            border-radius: 5px;
+        .question {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 15px;
         }
     </style>
 </head>
@@ -108,33 +97,37 @@
                     <li><a href="{% url 'groups_urls:view-messages' %}">Messages</a></li>
                     <li><a href="{% url 'user_urls:user-detail' %}">Profile</a></li>
                 </ul>
-                <li style="list-style: none; text-decoration: none;"><a href="#" id="signout" >Logout</a></li>
             </nav>
         </div>
     </header>
 
     <div class="container">
-        <h2>My Classes</h2>
-
-        <div class="class-grid">
-            {% if data %}
-            {% for class in data %}
-            <div class="class-card">
-                <h3>{{ class.title }}</h3>
-                <p>{{ class.description }}</p>
-                <p>{{ class.course }}</p>
-                <p>{{ class.courseCode }}</p>
-                <p>{{ class.startTime }}</p>
-                <a href="#" class="btn" onclick="ViewClass('{{ class.id }}')">Manage Class</a>
+        <h2>Add New Assessment</h2>
+        <form id="submitAmt">
+            <div class="form-group">
+                <label for="assessment-title">Assessment Title:</label>
+                <input type="text" id="assessment-title" name="title" required>
             </div>
-            {% endfor %}
-            {% else %}
-            <div>
-                <p>No Class yet</p>
+            <div class="form-group">
+                <label for="class">Class:</label>
+                <select id="class" name="classID" required>
+                    <option value="">Select a class</option>
+                    {% for class in classes %}
+                    <option value="{{ class.id }}">{{ class.courseCode }} - {{ class.title }}</option>
+                    {% endfor %}
+                </select>
             </div>
-            {% endif %}
-        </div>
+            <div class="form-group">
+                <label for="due-date">Due Date:</label>
+                <input type="datetime-local" id="due-date" name="dueTime" required>
+            </div>
+            <div class="form-group">
+                <label for="instructions">Instructions:</label>
+                <textarea id="instructions" name="instructions" rows="4" required></textarea>
+            </div>
+            <button type="submit" class="btn">Create Assessment</button>
+        </form>
     </div>
-    <script src="{% static 'js/script.js' %}"`></script>
-    </body>
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
 </html>

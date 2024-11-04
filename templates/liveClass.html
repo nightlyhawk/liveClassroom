@@ -36,9 +36,11 @@ window.onload = function () {
     const roomID = getUrlParams(window.location.href)['roomID'] || (Math.floor(Math.random() * 10000) + "");
     const userID = Math.floor(Math.random() * 10000) + "";
     const userName = '{{ name }}';
+    const role = '{{ role }}'
     const appID = 1776815266;
     const serverSecret = "164159b0d537918a5180fa1743b7eb85";
     const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, userID, userName);
+    role === 'Instructor'?
     fetch(`${window.location.protocol + "//" + window.location.host}/class/edit/{{ id }}/`, {
         method: "PUT",
         body: JSON.stringify({"roomID": roomID}),
@@ -47,6 +49,7 @@ window.onload = function () {
         })
     .then(response => response)
     .catch(error => alert(error))
+    : "skip"
     
         const zp = ZegoUIKitPrebuilt.create(kitToken);
         zp.joinRoom({
