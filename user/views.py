@@ -55,7 +55,7 @@ class UserRegister(APIView):
         except NewUser.DoesNotExist:
             return Response({"message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = NewUserSerializer(instance, data=request.data)
+        serializer = UpdateNewUserSerializer(instance, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)

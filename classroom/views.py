@@ -35,6 +35,19 @@ def viewingClass(request, pk):
 def startclass(request, pk):
     user = ast.literal_eval(request.COOKIES.get('user'))
     return render(request, "liveClass.html", context={"id": pk, "name": user['fullName'], "role": user['role']})
+
+@permission_classes([IsAuthenticated])
+def resetClass(request, pk):
+    try:
+        user = request.user
+        classroom = Classroom.objects.get(id=pk, instructor__user=user)
+        if classroom.roomID > 0:
+            classroom.roomID = 0
+            classroom.save()
+        
+        return Response({"message": "class ended"}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return render(request, "signin.html", context={"errors": str(e)})
         
 class ClassroomDetails(APIView):
     permission_classes = [IsAuthenticated]

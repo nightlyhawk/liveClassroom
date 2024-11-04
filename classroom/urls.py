@@ -5,6 +5,7 @@ app_name = 'class_urls'
 
 urlpatterns = [
     path('create/', ClassroomDetails.as_view(), name='classroom-create'),
+    path('reset/', resetClass, name='classroom-reset'),
     path('start/creation/', RoomCreate, name='redirect-create'),
     path('live/<int:pk>/', startclass, name='live-class'),
     path('edit/<int:pk>/', ClassroomDetails.as_view(), name='classroom-edit'),

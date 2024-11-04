@@ -183,5 +183,24 @@
         </div>
     </div>
     <script src="{% static 'js/script.js' %}"></script>
+    <script type="text/javascript">
+        window.onload(() =>{
+            fetch(`${window.location.protocol + "//" + window.location.host}/class/reset/`, {
+                method: "PUT",
+                credentials: "include",
+                headers: {"Authorization": `JWT ${token.access}`}, 
+            })
+            .then(response => {
+                if(!response.ok){
+                    throw new Error(JSON.stringify(response.json()))
+                }else{
+                    if(response.redirected){
+                        window.location.href = response.url;
+                    }
+                }
+            })
+            .catch(error => alert(error))
+        })
+    </script>
 </body>
 </html>

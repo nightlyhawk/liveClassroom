@@ -8,6 +8,7 @@ from django.contrib.auth.password_validation import validate_password
 class NewUserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     confirmPassword = serializers.CharField(write_only=True, required=True)
+    gender = serializers.CharField(required=False)
 
     class Meta:
         model = NewUser
@@ -29,13 +30,40 @@ class NewUserSerializer(serializers.ModelSerializer):
 
         return user
     
+
+class UpdateNewUserSerializer(serializers.ModelSerializer):
+    email = serializers.CharField(required=False)
+    password = serializers.CharField(write_only=True, required=False, validators=[validate_password])
+    confirmPassword = serializers.CharField(write_only=True, required=False)
+    fullName = serializers.CharField(required=False)
+    role = serializers.CharField(required=False)
+    gender = serializers.CharField(required=False)
+
+    class Meta:
+        model = NewUser
+        fields = ('id', 'email', 'fullName', 'password', 'confirmPassword', 'role', 'gender', 'created_at')
+
+    def validate(self, attrs):
+        if attrs.get('password') and attrs.get('confirmPassword'):
+            password=attrs.get('password')
+            confirmPassword=attrs.pop('confirmPassword')
+            if password != confirmPassword:
+                raise serializers.ValidationError({ "password": "Password fields didn't match." })
+        else:
+            attrs.pop('confirmPassword')
+
+        return attrs
+    
     def update(self, instance, validated_data):
+        password = validated_data.pop("password")
+        if password:
+            instance.set_password(password)
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
             
         return instance  
-    
+
 class LoginSerializer(serializers.ModelSerializer):
     email = serializers.CharField()
     password = serializers.CharField(write_only=True)

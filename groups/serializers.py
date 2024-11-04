@@ -9,6 +9,10 @@ from .models import *
 #         fields = '__all__'
 class InstructorSerializer(serializers.ModelSerializer):
     user = NewUserSerializer(read_only=True)
+    bio = serializers.CharField(required=False)
+    educationLevel = serializers.CharField(required=False)
+    course = serializers.CharField(required=False)
+    experience = serializers.IntegerField(required=False)
     
     class Meta:
         model = Instructor
@@ -21,8 +25,18 @@ class InstructorSerializer(serializers.ModelSerializer):
 
         return instructor
     
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+            
+        return instance  
+    
 class StudentSerializer(serializers.ModelSerializer):
     user = NewUserSerializer(read_only=True)
+    title = serializers.CharField(required=False)
+    level = serializers.CharField(required=False)
+    courses = serializers.CharField(required=False)
 
     class Meta:
         model = Student
@@ -34,3 +48,10 @@ class StudentSerializer(serializers.ModelSerializer):
         student.save()
 
         return student
+    
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+            
+        return instance
