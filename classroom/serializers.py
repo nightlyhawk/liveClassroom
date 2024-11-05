@@ -84,7 +84,8 @@ class SubmissionsSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         assessment = validated_data.pop('assessment')
-        sub = Submissions.objects.create(assessment=assessment, **validated_data)
+        student = validated_data.pop('student')
+        sub = Submissions.objects.create(assessment=assessment, student=student, **validated_data)
         return sub
     
     def update(self, instance, validated_data: dict):

@@ -99,8 +99,8 @@
 
         <div class="join-form">
             <h3>Enter Class Code</h3>
-            <form action="#" id="join-code" method="post">
-                <input type="text" id="code" name="class-code" placeholder="Enter class code" required>
+            <form onsubmit="joinCode()" id="join-code" >
+                <input type="text" oninput="addCode()" id="code" name="class-code" placeholder="Enter class code" required>
                 <input type="submit" value="Join Class">
             </form>
         </div>

@@ -283,11 +283,17 @@ class SubmissionsDetails(APIView):
 
     def post(self, request, pk):
         amt = Assessment.objects.get(pk=pk)
+        student = Student.objects.get(user=request.user)
+        for sub in amt.submissions.all():
+            if student == sub.student:
+                return Response({"message":"You've already made a submission"}, status=status.HTTP_400_BAD_REQUEST)
+        
         serializer = SubmissionsSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(assessment=amt)
+            serializer.save(assessment=amt, student=student)
             return redirect("class_urls:view-assessment")
         return render(request, "answerAmt.html", context={"error":serializer.errors})
+        
     
     def put(self, request, pk):
         try:

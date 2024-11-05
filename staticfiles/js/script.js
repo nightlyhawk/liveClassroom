@@ -34,7 +34,7 @@ for(let i=0; i<links.length; i++){
                 window.location.href = response.url
             }
         })
-        .catch(error => alert(error))
+        .catch(error => alert(error.message))
     }))
 }
 signoutBtn.addEventListener("click", () => {
@@ -47,13 +47,13 @@ signoutBtn.addEventListener("click", () => {
         })
     .then(response => {
         if(!response.ok){
-            throw new Error(response.json())
+            return response.json().then(err => { throw err; });
         }
         if(response.redirected){
             window.location.href = response.url
         }
     })
-    .catch(error => alert(error))
+    .catch(error => alert(error.message))
 })
 
 function ViewClass(id){
@@ -65,13 +65,13 @@ function ViewClass(id){
         })
     .then(response => {
         if(!response.ok){
-            throw new Error(response.json())
+            return response.json().then(err => { throw err; });
         }
         if(response.redirected){
             window.location.href = response.url
         }
     })
-    .catch(error => alert(error))
+    .catch(error => alert(error.message))
 }
 const join = document.getElementById("joinClass");
 let search;
@@ -126,14 +126,14 @@ function SearchClass(e){
     ).catch(error => alert(error.message));
 }   
 
-const cForm = document.getElementById("join-code");
-const inputCode = document.getElementById("code");
 let code = 0;
-inputCode.addEventListener("input", (e) => {
+// const cForm = document.getElementById("join-code");
+function addCode(e){
     e.preventDefault();
     code = e.target.value;
-})
-cForm.addEventListener("submit", (e) => {
+}
+
+function joinCode(e){
     e.preventDefault();
 
     fetch(`${window.location.protocol + "//" + window.location.host}/class/join/code/${code}/`, {
@@ -143,14 +143,14 @@ cForm.addEventListener("submit", (e) => {
         })
     .then(response => {
         if(!response.ok){
-            throw new Error(JSON.stringify(response.json()))
+            return response.json().then(err => { throw err; });
         }else{
             return response.json();
         }
     })
     .then(message => alert(message))
-    .catch(error => alert(error))
-})
+    .catch(error => alert(error.message))
+}
 
 function JoinCode(cd){
     fetch(`${window.location.protocol + "//" + window.location.host}/class/join/code/${cd}/`, {
@@ -160,13 +160,13 @@ function JoinCode(cd){
     })
     .then(response => {
         if(!response.ok){
-            throw new Error(JSON.stringify(response.json()))
+            return response.json().then(err => { throw err; });
         }else{
             return response.json();
         }
     })
     .then(message => alert(JSON.stringify(message)))
-    .catch(error => alert(error))
+    .catch(error => alert(error.message))
 }
 
 
@@ -178,7 +178,7 @@ subAmt.addEventListener("submit", (e) => {
     console.log("entered");
     let newForm = new FormData(subAmt);
 
-    fetch(`${window.location.protocol + "//" + window.location.host}/class/create/submissions/${amtID}`, {
+    fetch(`${window.location.protocol + "//" + window.location.host}/class/create/submissions/${amtID}/`, {
             method: "POST",
             credentials: "include",
             body: newForm,
@@ -186,13 +186,18 @@ subAmt.addEventListener("submit", (e) => {
         })
     .then(response => {
         if(!response.ok){
-            throw new Error(JSON.stringify(response.json()))
+            return response.json().then(err => { throw err; });
         }else{
-            return response.json();
+            if(response.redirected){
+                window.location.href = response.url;
+            }
         }
     })
     .then(message => alert(JSON.stringify(message)))
-    .catch(error => alert(error))
+    .catch(error => {
+        console.log(error.message)
+        alert(error.message);
+    })
 })
 
 const editAmt = document.getElementById("editAmt");
@@ -201,7 +206,7 @@ editAmt.addEventListener("submit", (e) => {
     console.log("entered");
     let newForm = new FormData(editAmt);
 
-    fetch(`${window.location.protocol + "//" + window.location.host}/class/edit/assessment/${newForm.get("classID")}`, {
+    fetch(`${window.location.protocol + "//" + window.location.host}/class/edit/assessment/${newForm.get("classID")}/`, {
             method: "PUT",
             credentials: "include",
             body: newForm,
@@ -209,17 +214,17 @@ editAmt.addEventListener("submit", (e) => {
         })
     .then(response => {
         if(!response.ok){
-            throw new Error(JSON.stringify(response.json()))
+            return response.json().then(err => { throw err; });
         }else{
             return response.json();
         }
     })
     .then(message => alert(JSON.stringify(message)))
-    .catch(error => alert(error))
+    .catch(error => alert(error.message))
 })
 
 function delAmt(id){
-    fetch(`${window.location.protocol + "//" + window.location.host}/class/delete/assessment/${id}`, {
+    fetch(`${window.location.protocol + "//" + window.location.host}/class/delete/assessment/${id}/`, {
         method: "DELETE",
         redirect: "follow",
         credentials: "include",
@@ -227,14 +232,14 @@ function delAmt(id){
     })
     .then(response => {
         if(!response.ok){
-            throw new Error(JSON.stringify(response.json()))
+            return response.json().then(err => { throw err; });
         }else{
             if(response.redirected){
                 window.location.href = response.url;
             }
         }
     })
-    .catch(error => alert(error))
+    .catch(error => alert(error.message))
 }
 
 document.getElementById("file").addEventListener("change", () => {
@@ -242,3 +247,8 @@ document.getElementById("file").addEventListener("change", () => {
     p.innerText = "file attached";
     document.getElementById("subform").appendChild(p);
 })
+
+function upload(e){
+    console.log('here'); 
+    document.getElementById('file').click();
+}
