@@ -82,17 +82,7 @@
     <div class="container">
         <aside class="sidebar">
             <h2>EduConnect</h2>
-            <nav style="justify-content: space-between;">
-                <ul>
-                    <li><a href="{% url 'groups_urls:instructor-dashboard' %}">Dashboard</a></li>
-                    <li><a href="#" onclick="window.location.href = `/class/instructor/classes/${user.id}/`">My Classes</a></li>
-                    <li><a href="{% url 'groups_urls:instructor-schedule' %}">Schedule</a></li>
-                    <li><a href="{% url 'class_urls:view-assessment' %}">Assessments</a></li>
-                    <li><a href="{% url 'groups_urls:view-messages' %}">Messages</a></li>
-                    <li><a href="{% url 'user_urls:user-detail' %}">Profile</a></li>
-                </ul> 
-                <li style="list-style: none; text-decoration: none;"><a href="#" id="signout" >Logout</a></li>
-            </nav>
+            {% include "navbar.html" %}
         </aside>
         <main class="main-content">
             <h1>Welcome, {{ name }}</h1>,

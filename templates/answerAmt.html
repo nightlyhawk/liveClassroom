@@ -96,16 +96,7 @@
     <header>
         <div class="container">
             <h1>EduConnect</h1>
-            <nav>
-                <ul>
-                    <li><a href="{% url 'groups_urls:student-dashboard' %}">Dashboard</a></li>
-                    <li><a href="{% url 'class_urls:student-myclasses' %}">My Classes</a></li>
-                    <li><a href="{% url 'class_urls:classroom-recommended' %}">Join Class</a></li>
-                    <li><a href="{% url 'class_urls:view-assessment' %}">Assessments</a></li>
-                    <li><a href="{% url 'groups_urls:view-messages' %}">Messages</a></li>
-                    <li><a href="{% url 'user_urls:user-detail' %}">Profile</a></li>
-                </ul>
-            </nav>
+            {% include "stdnavbar.html" %}
         </div>
     </header>
 
