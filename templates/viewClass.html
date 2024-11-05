@@ -133,7 +133,7 @@
             <h2>{{ data.title }}</h2>
             <div class="class-actions">
                 <a href="{% url 'class_urls:live-class' data.id %}" class="btn btn-primary">Start Class</a>
-                <a href="{% url 'class_urls:start-edit' %}" class="btn btn-secondary">Edit Class</a>
+                <a href="{% url 'class_urls:start-edit' data.id %}" class="btn btn-secondary">Edit Class</a>
                 <a href="{% url 'class_urls:classroom-delete' data.id %}" class="btn btn-danger">Cancel Class</a>
             </div>
         </div>

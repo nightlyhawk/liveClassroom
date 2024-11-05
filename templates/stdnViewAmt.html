@@ -138,13 +138,13 @@
                 </thead>
                 <tbody>
                     {% if value %}
-                    {% for assessment in value %}
+                    {% for assessment in value.amt %}
                     <tr>
                         <td>{{ assessment.title }}</td>
                         <td>{{ assessment.dueDate }}</td>
                         <td>{{ assessment.status }}</td>
                         <!-- <td><span class="status status-upcoming">Upcoming</span></td> -->
-                        <td>{{ assessment.score }}</td>
+                        <td>{{ value.score }}</td>
                         <td>
                             <a href="{% url 'class_urls:manipulate-assessment' 'answer' %}?pk={{ assessment.id }}" class="btn">View Details</a>
                         </td>

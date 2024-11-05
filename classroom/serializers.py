@@ -76,7 +76,7 @@ class SubmissionsSerializer(serializers.ModelSerializer):
     text = serializers.CharField(required=False)
     file = serializers.FileField(required=False)
     status = serializers.CharField(read_only=True)
-    score = serializers.CharField(read_only=True)
+    score = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Submissions

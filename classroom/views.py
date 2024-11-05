@@ -103,7 +103,6 @@ def StudentJoinClass(request):
     serializer = ClassroomSerializer(classrooms, many=True)
     return render(request, "joinClass.html", context={"data": serializer.data})
 
-@api_view(['GET'])
 def EditClass(request, pk):
     classroom = Classroom.objects.get(pk=pk)
     serializer = ClassroomSerializer(classroom)
@@ -194,20 +193,20 @@ def assessmentView(request):
             for room in classrooms.all():
                 context["data"][f'{room.title}'] = []
                 for amt in assessment.all():
-                    if amt.classroom.title == room:
-                        context["data"][f'{room.title}'].append(amt)
-                    else: 
-                        pass
-
+                    if amt.classroom.title == room.title:
+                        context["data"][f'{room.title}'].append(AssessmentSerializer(amt).data)
+                      
             return render(request, "viewAmt.html", context=context)
         else:
             classrooms = Classroom.objects.filter(students__user__id=user.pk)
             assessment = Assessment.objects.filter(classroom__id__in=classrooms.values_list("pk", flat=True))
             for room in classrooms.all():
-                context["data"][f'{room.title}'] = []
+                context["data"][f'{room.title}'] = {"amt": []}
                 for amt in assessment.all():
-                    if amt.classroom.title == room:
-                        context["data"][f'{room.title}'].append(amt)
+                    if amt.classroom.title == room.title:
+                        sub = Submissions.objects.filter(student__user=user, assessment=amt)
+                        context["data"][f'{room.title}']['amt'].append(AssessmentSerializer(amt).data)
+                        context["data"][f'{room.title}']['score'] = sub.first().score if sub else 0
                     else: 
                         pass
 
@@ -248,8 +247,9 @@ class AssessmentDetails(APIView):
         
 
 @permission_classes([AllowAny])
-def getAssessment(request, action, **kwargs):
-    pk = kwargs.get("pk")
+def getAssessment(request, action, pk=None):
+    pk = request.GET.get("pk", None)
+    print(pk)
     user = ast.literal_eval(request.COOKIES.get('user'))
     user = NewUser.objects.get(pk=user['id'])
     if action == "create":
@@ -259,7 +259,8 @@ def getAssessment(request, action, **kwargs):
     elif action == "edit":
         assessment = Assessment.objects.get(id=pk)
         serializer = AssessmentSerializer(assessment)
-        classes = Classroom.objects.filter(instructor__user__id=pk).all()
+        classes = Classroom.objects.filter(instructor=assessment.classroom.instructor)
+        print(classes)
         classserializer = ClassroomSerializer(classes, many=True)
         return render(request, "editAmt.html", context={"id": pk, "data": serializer.data, "classes": classserializer.data})
     elif action == "answer":
