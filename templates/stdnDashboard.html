@@ -107,6 +107,22 @@
                 {% endif %}
                 <!-- Add more class cards as needed -->
             </div>
+            <h2>Announcements</h2>
+            <div class="class-grid">
+                {% if announcements %}
+                {% for announcement in announcements %}
+                <div class="class-card">
+                    <h3>{{ announcement.title }}</h3>
+                    <p>{{ announcement.content }}</p>
+                    <p style="color: grey;">by: {{ announcement.instructor.user.fullName }}</p>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div>
+                    <h3>No annoucements</h3>
+                </div>
+                {% endif %}
+            </div>
             <div class="join-class">
                 <h2>Join a New Class</h2>
                 <form action="#" id="join-code" method="post">

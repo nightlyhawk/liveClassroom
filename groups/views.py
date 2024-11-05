@@ -9,6 +9,8 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.decorators import parser_classes, api_view, permission_classes
 from rest_framework.views import APIView
 from classroom.models import Classroom
+from announcement.models import Announcement
+from announcement.serializers import AnnouncementSerializer
 from classroom.serializers import ClassroomSerializer
 
 
@@ -87,7 +89,14 @@ def StdnDashboard(request):
         user = NewUser.objects.get(pk=user['id'])
         classes = Classroom.objects.all()
         serializer = ClassroomSerializer(classes, many=True)
-        return render(request, "stdnDashboard.html", context={"data": serializer.data, "name": user.fullName})
+        classrooms = classes.filter(students__user__id=user.id).distinct().all()
+        instructors = []
+        for classroom in classrooms:
+            instructors.append(classroom.instructor.pk)
+        
+        annoucements = Announcement.objects.filter(instructor__id__in=instructors).all()
+        aserializer = AnnouncementSerializer(annoucements, many=True)
+        return render(request, "stdnDashboard.html", context={"data": serializer.data, "name": user.fullName, "announcements": aserializer.data})
     except Exception as e:
             return render(request, "stdnDashboard.html", context={"errors": str(e)})
 

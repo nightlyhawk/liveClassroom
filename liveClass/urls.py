@@ -27,4 +27,5 @@ urlpatterns = [
     path('user/', include('user.urls', namespace='user_urls')),
     path('groups/', include('groups.urls', namespace='groups_urls')),
     path('class/', include('classroom.urls', namespace='class_urls')),
+    path('announcement/', include('announcement.urls', namespace='announcement_urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_URL)
