@@ -4,12 +4,12 @@ from announcement.forms import AnnouncementForm
 from announcement.models import Announcement
 
 # Create your views here.
-def announcement_view(request):
+def announcement_list(request):
     annoucements = Announcement.objects.al()
     return render(request, 'announcement.html', {'announcements': annoucements})
 
 
-def addAnnoucement(request):
+def announcement_create(request):
     if request.method == 'POST':
         form = AnnouncementForm(request.POST)
         if form.is_valid():
