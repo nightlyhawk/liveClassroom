@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'user',
     'classroom',
     'groups',
+    'announcement',
 
     'rest_framework',
     'six',
