@@ -12,7 +12,7 @@ class Classroom(models.Model):
     courseCode = models.IntegerField()
     startTime = models.DateTimeField()
     endTime = models.DateTimeField()
-    code = models.IntegerField()
+    code = models.IntegerField(blank=True, null=True)
     roomID = models.IntegerField(default=0)
     attendTotal = models.IntegerField(default=0)
 
