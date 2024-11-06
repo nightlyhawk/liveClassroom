@@ -169,6 +169,30 @@ function JoinCode(cd){
     .catch(error => alert(error.message))
 }
 
+const createAmt = document.getElementById("createAmt");
+createAmt.addEventListener("submit", (e) => {
+    e.preventDefault();
+    console.log("entered");
+    let newForm = new FormData(createAmt);
+
+    fetch(`${window.location.protocol + "//" + window.location.host}/class/create/assessment/${newForm.get("classID")}/`, {
+            method: "POST",
+            credentials: "include",
+            body: newForm,
+            headers: {"Authorization": `JWT ${token.access}`, "X-CSRFToken": getCookie("csrftoken")}, 
+        })
+    .then(response => {
+        if(!response.ok){
+            throw new Error(JSON.stringify(response.json()))
+        }else{
+            if(response.redirected){
+                window.location.href = response.url;
+            }
+        }
+    })
+    .then(message => alert(JSON.stringify(message)))
+    .catch(error => alert(error))
+})
 
 
 const subAmt = document.getElementById("submissions");

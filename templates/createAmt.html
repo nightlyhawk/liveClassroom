@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -93,7 +94,7 @@
 
     <div class="container">
         <h2>Add New Assessment</h2>
-        <form id="submitAmt">
+        <form id="createAmt">
             <div class="form-group">
                 <label for="assessment-title">Assessment Title:</label>
                 <input type="text" id="assessment-title" name="title" required>
@@ -118,48 +119,6 @@
             <button type="submit" class="btn">Create Assessment</button>
         </form>
     </div>
-    <script>
-        function getCookie(cname) {
-            let name = cname + "=";
-            let ca = document.cookie.split(';');
-            for(let i = 0; i < ca.length; i++) {
-                let c = ca[i];
-                while (c.charAt(0) == ' ') {
-                c = c.substring(1);
-                }
-                if (c.indexOf(name) == 0) {
-                return c.substring(name.length, c.length);
-                }
-            }
-            return "";
-        }
-        let token = getCookie("tokens");
-        token = token.replace(/\\054/g, ",").replace(/"/g, '54s').replace(/'/g, '"').replace(/54s/g, "")
-        token = JSON.parse(token)
-        const createAmt = document.getElementById("submitAmt");
-        createAmt.addEventListener("submit", (e) => {
-            e.preventDefault();
-            console.log("entered");
-            let newForm = new FormData(createAmt);
-
-            fetch(`${window.location.protocol + "//" + window.location.host}/class/create/assessment/${newForm.get("classID")}/`, {
-                    method: "POST",
-                    credentials: "include",
-                    body: newForm,
-                    headers: {"Authorization": `JWT ${token.access}`, "X-CSRFToken": getCookie("csrftoken")}, 
-                })
-            .then(response => {
-                if(!response.ok){
-                    throw new Error(JSON.stringify(response.json()))
-                }else{
-                    if(response.redirected){
-                        window.location.href = response.url;
-                    }
-                }
-            })
-            .then(message => alert(JSON.stringify(message)))
-            .catch(error => alert(error))
-        })
-    </script>
+    <script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>
