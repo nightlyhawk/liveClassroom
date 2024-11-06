@@ -107,13 +107,13 @@
             <p><strong>Due Date:</strong>{{ data.dueDate }}</p>
             <p><strong>Instructions:</strong>{{ data.instructions }}</p>
         </div>
-        <p id="error"></p>
+        <p id="fileadded" style="color: green;"></p>
 
         <form id="submissions" onsubmit="amtID='{{ data.id }}'">
             <div class="form-group subform">
                 <label for="text">Answer:</label>
                 <textarea id="text" name="text" rows="4" placeholder="Type your answer here or upload a file"></textarea>
-                <input type="file" id="file" name="file" style="display: none;"/>
+                <input type="file" id="file" onchange="notify()" name="file" style="display: block; opacity: 0;"/>
             </div>
             <button class="btn" type="button" onclick="upload()" name="file-upload" id="file-upload"><img src="{% static 'icons/attachment.svg' %}" alt="upload" /></button>
             <button type="submit" class="btn">Submit Assessment</button>

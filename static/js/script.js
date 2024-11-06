@@ -187,10 +187,10 @@ subAmt.addEventListener("submit", (e) => {
     .then(response => {
         if(!response.ok){
             return response.json().then(err => { throw err; });
-        }else{
-            if(response.redirected){
-                window.location.href = response.url;
-            }
+        }else if(response.redirected){
+            window.location.href = response.url;
+        }else {
+            return response.json()
         }
     })
     .then(message => alert(JSON.stringify(message)))
@@ -251,4 +251,12 @@ document.getElementById("file").addEventListener("change", () => {
 function upload(e){
     console.log('here'); 
     document.getElementById('file').click();
+}
+
+function notify(){
+    // e.preventDefault();
+    const file = document.getElementById('file').files[0]
+    if(file){
+        document.getElementById('fileadded').innerText = `${file.name} file added`;
+    }
 }
