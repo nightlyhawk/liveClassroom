@@ -81,6 +81,11 @@ class SubmissionsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Submissions
         fields = ('id', 'assessment', 'text', 'file', 'status', 'score', 'createdAt')
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation["studentName"] = instance.student.user.fullName
+        return representation
 
     def create(self, validated_data):
         assessment = validated_data.pop('assessment')

@@ -277,6 +277,14 @@ def submissionView(request, pk):
         serializer = SubmissionsSerializer(assessment.submissions, many=True)
 
         return render(request, "submissions.html", context={"subs": serializer.data})
+    
+@permission_classes([AllowAny])
+def submissionViewDetails(request, pk):
+        submissions = Submissions.objects.get(pk=pk)
+        serializer = SubmissionsSerializer(submissions)
+
+        return render(request, "subDetails.html", context={"sub": serializer.data})
+     
 class SubmissionsDetails(APIView):
     permission_classes = [IsAuthenticated]
     parser_classes = [MultiPartParser, JSONParser, FormParser]

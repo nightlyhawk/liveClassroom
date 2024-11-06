@@ -26,6 +26,7 @@ urlpatterns = [
     path('edit/assessment/<int:pk>/', AssessmentDetails.as_view(), name='edit-assessment'),
     path('delete/assessment/<int:pk>/', AssessmentDetails.as_view(), name='delete-assessment'),
     path('view/submissions/<int:pk>/', submissionView, name='view-submissions'),
+    path('view/submissions/detail/<int:pk>/', submissionViewDetails, name='view-submission-detail'),
     path('create/submissions/<int:pk>/', SubmissionsDetails.as_view(), name='create-submissions'),
     path('edit/submissions/<int:pk>/', SubmissionsDetails.as_view(), name='edit-submissions'),
 ]

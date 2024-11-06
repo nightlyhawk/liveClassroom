@@ -97,11 +97,11 @@
             <tbody>
                 {% for sub in subs %}
                 <tr>
-                    <td>{{ sub.student.user.fullName }}</td>
+                    <td>{{ sub.studentName }}</td>
                     <td>{{ sub.createdAt }}</td>
                     <td>{{ sub.status }}</td>
                     <td>{{ sub.score }}</td>
-                    <td><a href="#" class="btn">View</a></td>
+                    <td><a href="{% url 'class_urls:view-submission-detail' sub.id %}" class="btn">View</a></td>
                 </tr>
                 {% endfor %}
             </tbody>

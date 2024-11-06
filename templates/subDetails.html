@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment: {{ data.title }} - EduConnect</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding: 1rem;
+            margin-bottom: 20px;
+        }
+        nav ul {
+            list-style: none;
+        }
+        nav ul li {
+            display: inline;
+            margin-right: 10px;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+        h1, h2, h3 {
+            margin-bottom: 20px;
+        }
+        .assessment-info {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .question {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="radio"],
+        input[type="checkbox"] {
+            margin-right: 5px;
+        }
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .btn {
+            display: inline-block;
+            background: #333;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>EduConnect</h1>
+            {% include "navbar.html" %}
+        </div>
+    </header>
+
+    <div class="container">
+        <h2>Assessment: {{ sub.assessment.title }}</h2>
+        <div class="assessment-info">
+            <h3>{{ sub.assessment.courseCode }} - {{ sub.assessment.classTitle }}</h3>
+            <p><strong>Student:</strong>{{ sub.studentName }}</p>
+            <p><strong>Instructions:</strong>{{ sub.assessment.instructions }}</p>
+        </div>
+        <p id="error"></p>
+
+        <form>
+            <div class="form-group subform">
+                <label for="text">Answer:</label>
+                <textarea id="text" name="text" rows="4" placeholder="{{ sub.text }}" disabled></textarea>
+                <input type="file" id="file" name="file" value="{{ sub.file }}" disabled/>
+            </div>
+            <!-- <button class="btn" type="button" onclick="upload()" name="file-upload" id="file-upload"><img src="{% static 'icons/attachment.svg' %}" alt="upload" /></button>
+            <button type="submit" class="btn">Submit Assessment</button> -->
+        </form>
+    </div>
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>
